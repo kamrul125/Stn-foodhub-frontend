@@ -1,36 +1,111 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
 
-First, run the development server:
+# 🍔 FoodHub Pro Client
+
+A modern, responsive, and production-ready frontend for a Food Ordering Platform built with Next.js 14, 
+Tailwind CSS, and Shadcn UI.
+
+---
+
+
+github clone : https://github.com/kamrul125/Stn-foodhub-frontend/tree/main/src
+
+---
+
+## 🛠️ Tech Stack
+
+- Next.js 14 (App Router)
+- TypeScript
+- Tailwind CSS
+- Shadcn UI
+- Axios
+- TanStack Query
+- React Hook Form
+- Zod
+- Recharts
+- next-themes
+
+---
+
+## ✨ Features
+
+- 🌍 Modern Landing Page
+- 🔐 Authentication (Login / Register)
+- 🍔 Food Listing & Details
+- 🔍 Search, Filter, Sorting
+- 🛒 Order System
+- ⭐ Review System
+- 📊 Dashboard (User & Admin)
+- 🌙 Dark Mode
+- 📱 Fully Responsive
+
+---
+
+## 📁 Project Structure
+src/
+│
+├── app/
+│ ├── (main)/
+│ ├── (auth)/
+│ ├── dashboard/
+│
+├── components/
+│ ├── shared/
+│ ├── home/
+│ ├── dashboard/
+│
+├── services/
+├── hooks/
+├── lib/
+└── types/
+
+
+---
+
+## ⚙️ Installation
 
 ```bash
+github clone :  https://github.com/kamrul125/Stn-foodhub-frontend/tree/main/src
+live link : https://stn-foodhub-frontend.vercel.app/
+cd foodhub-pro-client
+npm install
+
+Environment Variables : 
+
+Create .env.local file:
+NEXT_PUBLIC_API_URL=hhttps://stn-foodhub-backend.vercel.app/
+
+Run Project : 
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Build : 
+npm run build
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Pages : 
+Home
+Foods
+Food Details
+About
+Contact
+Login / Register
+Dashboard (User / Admin)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+📊 Dashboard Features
+👑 Admin
+Analytics
+Manage Foods
+Manage Orders
+Manage 
 
-## Learn More
+👤 User
+My Orders
+Reviews
+Profile
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+🎨 UI Features
+Consistent design system
+Dark / Light mode
+Skeleton loading
+Reusable components
+📌 Author
+Md Kamruzzaman
