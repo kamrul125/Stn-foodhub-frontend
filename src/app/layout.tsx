@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "../components/shared/theme-toggle/theme-provider";// আপনার পাথ অনুযায়ী চেক করে নিন
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,10 +18,17 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
-        {/* এখানে ট্যাগগুলো থাকা মাস্ট, নয়তো রানটাইম এরর দিবে */}
-        <main>
-          {children}
-        </main>
+        {/* ThemeProvider দিয়ে পুরো অ্যাপকে র‍্যাপ করা হয়েছে */}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <main>
+            {children}
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   );

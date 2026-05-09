@@ -1,1 +1,27 @@
 @import "tailwindcss";
+
+@theme {
+  /* এখানে শুধু ভেরিয়েবল থাকবে */
+  --color-background: white;
+  --color-foreground: #020617;
+  
+  /* ডার্ক মোডের কালারগুলোকেও ভেরিয়েবল হিসেবে ডিফাইন করুন */
+  --color-dark-bg: #0f172a;
+  --color-dark-fg: #f8fafc;
+  --color-dark-card: #1e293b;
+}
+
+@layer base {
+  body {
+    /* ডিফল্ট লাইট মোড */
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  /* ডার্ক মোড অ্যাক্টিভ হলে কালার পরিবর্তন হবে */
+  .dark body {
+    background-color: var(--color-dark-bg);
+    color: var(--color-dark-fg);
+  }
+}
