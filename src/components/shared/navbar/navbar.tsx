@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { Menu, X, User, LogOut, LayoutDashboard, ShoppingBag, Utensils } from "lucide-react";
+import { Menu, X, User, LogOut, LayoutDashboard, ShoppingBag, Utensils, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "../theme-toggle/theme-toggle";
 import { 
@@ -12,10 +12,18 @@ import {
   DropdownMenuSeparator, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [cartCount, setCartCount] = useState(0); 
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -55,29 +63,57 @@ const Navbar = () => {
         {/* Action Buttons */}
         <div className="flex items-center space-x-3">
           
-          {/* Theme Toggler - এখানে কালার চেঞ্জ হবে */}
           <div className="bg-slate-100 dark:bg-slate-800 p-1 rounded-full transition-colors duration-500">
             <ThemeToggle />
           </div>
 
           {isLoggedIn ? (
             <div className="flex items-center space-x-3">
-              {/* My Orders / Cart Icon - Linked and Fixed */}
-              <Link href="/dashboard/user/my-orders">
-                <Button variant="ghost" size="icon" className="rounded-full hover:bg-orange-100 hover:text-orange-600 relative">
-                  <ShoppingBag className="h-5 w-5" />
-                  <span className="absolute top-1 right-1 h-2 w-2 bg-orange-600 rounded-full"></span>
-                </Button>
-              </Link>
               
-              {/* User Account Dropdown */}
+              {/* --- Cart Icon with Sheet --- */}
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-orange-100 hover:text-orange-600 relative">
+                    <ShoppingBag className="h-5 w-5" />
+                    <span className="absolute top-1 right-1 h-4 w-4 bg-orange-600 rounded-full text-[10px] text-white flex items-center justify-center font-bold">
+                      {cartCount}
+                    </span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent className="w-full sm:max-w-md rounded-l-2rem border-l-4 border-orange-600 z-101">
+                  <SheetHeader className="pb-6 border-b">
+                    <SheetTitle className="text-2xl font-black italic uppercase flex items-center gap-2">
+                      <ShoppingCart className="text-orange-600" /> Your <span className="text-orange-600">Cart</span>
+                    </SheetTitle>
+                  </SheetHeader>
+                  
+                  <div className="flex flex-col items-center justify-center h-[70vh] text-center space-y-4">
+                    <div className="bg-slate-100 dark:bg-slate-900 p-6 rounded-full">
+                       <ShoppingBag size={48} className="text-slate-300" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold italic">Your cart is empty</h3>
+                      <p className="text-slate-500 text-sm font-medium">Add some delicious food to get started!</p>
+                    </div>
+                    <Button asChild className="bg-orange-600 hover:bg-orange-700 rounded-xl font-bold uppercase tracking-tighter italic text-white">
+                       <Link href="/foods">Browse Menu</Link>
+                    </Button>
+                  </div>
+                </SheetContent>
+              </Sheet>
+              
+              {/* --- Updated User Account Dropdown --- */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="icon" className="rounded-full border-2 border-orange-600/20 hover:border-orange-600 transition-all overflow-hidden focus-visible:ring-orange-600">
                     <User className="h-5 w-5 text-orange-600" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-64 p-2 rounded-1.5rem shadow-2xl border-slate-100 dark:border-slate-800">
+                <DropdownMenuContent 
+                  align="end" 
+                  // z-[100] এবং mt-2 যোগ করা হয়েছে প্রফেশনাল লুকের জন্য
+                  className="w-64 p-2 rounded-1.5rem shadow-2xl border-slate-100 dark:border-slate-800 bg-background z-100 mt-2 animate-in fade-in-0 zoom-in-95"
+                >
                   <DropdownMenuLabel className="font-black italic px-4 py-3 uppercase text-xs tracking-widest text-slate-500">Account Overview</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   
@@ -122,7 +158,6 @@ const Navbar = () => {
             </div>
           )}
 
-          {/* Mobile Menu Button */}
           <Button variant="ghost" size="icon" className="md:hidden rounded-full" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <X className="h-6 w-6 text-orange-600" /> : <Menu className="h-6 w-6" />}
           </Button>
