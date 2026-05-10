@@ -9,30 +9,52 @@ import Newsletter from "@/components/home/newsletter/newsletter";
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex flex-col">
-      {/* 1. Hero Section: High conversion area with 70vh height */}
-      <Hero />
+    <main className="min-h-screen flex flex-col overflow-hidden transition-colors duration-300">
+      {/* 1. Hero Section: 60-70% Height, CTA focus */}
+      <section id="hero" className="relative">
+        <Hero />
+      </section>
 
-      {/* 2. Statistics: Trust building section */}
-      <Statistics />
+      {/* 2. Statistics: Real, dynamic-style trust building */}
+      <section className="bg-orange-600">
+        <Statistics />
+      </section>
 
-      {/* 3. Popular Categories: Visual navigation */}
-      <Categories />
+      {/* 3. Popular Categories: Food classification */}
+      <section className="py-20 bg-slate-50 dark:bg-slate-950">
+        <Categories />
+      </section>
 
-      {/* 4. Featured Foods: The core product listing (Point 3: Cards) */}
-      <FeaturedFoods />
+      {/* 4. Featured Foods: 4 cards per row on desktop (Point 3) */}
+      <section className="py-20 container mx-auto px-4">
+        <div className="mb-12 text-center">
+          <h2 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter">
+            Featured <span className="text-orange-600">Dishes</span>
+          </h2>
+          <p className="text-muted-foreground mt-4 font-medium italic">Handpicked favorites just for you</p>
+        </div>
+        <FeaturedFoods />
+      </section>
 
-      {/* 5. How It Works: Process explanation */}
-      <HowItWorks />
+      {/* 5. How It Works: Interactive process steps */}
+      <section className="py-20 bg-white dark:bg-slate-900 rounded-[3rem] my-10">
+        <HowItWorks />
+      </section>
 
-      {/* 6. Testimonials: User reviews for credibility */}
-      <Testimonials />
+      {/* 6. Testimonials: Credibility & User reviews */}
+      <section className="py-20">
+        <Testimonials />
+      </section>
 
-      {/* 7. FAQ: Addressing common queries */}
-      <FAQ />
+      {/* 7. FAQ: Collapsible FAQ section */}
+      <section className="py-20 bg-slate-50 dark:bg-slate-950">
+        <FAQ />
+      </section>
 
-      {/* 8. Newsletter: Subscription form (Point 2: Meaningful Sections) */}
-      <Newsletter />
+      {/* 8. Newsletter: Final CTA before footer */}
+      <section className="py-20">
+        <Newsletter />
+      </section>
     </main>
   );
 }
