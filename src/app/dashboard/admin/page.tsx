@@ -1,34 +1,102 @@
 "use client";
 import React from "react";
-import { Users, Utensils, DollarSign, ShoppingCart } from "lucide-react";
+import { useForm } from "react-hook-form";
+import Link from "next/link";
 
-const adminStats = [
-  { label: "Total Revenue", value: "$45,231", icon: DollarSign, color: "bg-green-100 text-green-600" },
-  { label: "Total Orders", value: "1,205", icon: ShoppingCart, color: "bg-orange-100 text-orange-600" },
-  { label: "Active Users", value: "842", icon: Users, color: "bg-blue-100 text-blue-600" },
-  { label: "Total Foods", value: "64", icon: Utensils, color: "bg-purple-100 text-purple-600" },
-];
+export default function LoginPage() {
+  const { register, handleSubmit } = useForm();
 
-export default function AdminOverview() {
+  const onSubmit = async (data: any) => {
+    try {
+      const res = await fetch("http://localhost:5000/api/v1/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+      
+      console.log("Logged In User Role:", result.data?.user?.role);
+
+      if (result.success) {
+        localStorage.setItem("accessToken", result.data.token);
+        localStorage.setItem("user", JSON.stringify(result.data.user));
+
+        // রোল যাই আসুক (ADMIN/admin), সেটাকে ছোট হাতের করে চেক করছি
+        const userRole = result.data?.user?.role?.toLowerCase();
+
+        if (userRole === "admin") {
+          // অ্যাডমিন হলে সরাসরি আপনার ড্যাশবোর্ড পেজে যাবে
+          window.location.href = "/dashboard/admin";
+        } else {
+          // ইউজার হলে হোমে যাবে
+          window.location.href = "/";
+        }
+      } else {
+        alert(result.message || "লগইন ব্যর্থ হয়েছে!");
+      }
+    } catch (err) {
+      console.error("Login Error:", err);
+      alert("সার্ভার কানেকশন এরর!");
+    }
+  };
+
   return (
-    <div className="space-y-8">
-      <h1 className="text-3xl font-black italic text-slate-800 dark:text-white">Admin Control Panel</h1>
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-4">
+      <div className="w-full max-w-md bg-white dark:bg-slate-900 p-10 rounded-[3rem] shadow-xl border border-slate-100 dark:border-slate-800">
+        
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-black italic uppercase tracking-tighter text-slate-900 dark:text-white">
+            FoodHub <span className="text-orange-600">Login</span>
+          </h1>
+          <p className="text-slate-500 font-bold italic text-xs mt-2 uppercase tracking-widest">
+            Access your kitchen dashboard
+          </p>
+        </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {adminStats.map((stat, i) => (
-          <div key={i} className="bg-white dark:bg-slate-900 p-6 rounded-2rem shadow-sm border border-slate-50 dark:border-slate-800">
-            <div className={`${stat.color} w-12 h-12 rounded-2xl flex items-center justify-center mb-4`}>
-              <stat.icon size={24} />
-            </div>
-            <p className="text-sm font-bold text-muted-foreground">{stat.label}</p>
-            <h3 className="text-2xl font-black mt-1">{stat.value}</h3>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div className="space-y-2">
+            <label className="block text-[10px] font-black uppercase italic text-slate-400 ml-4 tracking-widest">
+              Email Address
+            </label>
+            <input 
+              {...register("email")}
+              type="email" 
+              required
+              placeholder="admin@foodhub.com"
+              className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-orange-600 focus:bg-white dark:focus:bg-slate-900 outline-none font-bold transition-all text-slate-900 dark:text-white"
+            />
           </div>
-        ))}
-      </div>
 
-      {/* Placeholder for Analytics Chart or Management Tables */}
-      <div className="bg-white dark:bg-slate-900 h-96 rounded-[2.5rem] border border-dashed border-slate-200 dark:border-slate-800 flex items-center justify-center">
-        <p className="text-muted-foreground font-bold italic">Revenue Analytics Chart Coming Soon...</p>
+          <div className="space-y-2">
+            <label className="block text-[10px] font-black uppercase italic text-slate-400 ml-4 tracking-widest">
+              Password
+            </label>
+            <input 
+              {...register("password")}
+              type="password" 
+              required
+              placeholder="••••••••"
+              className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-orange-600 focus:bg-white dark:focus:bg-slate-900 outline-none font-bold transition-all text-slate-900 dark:text-white"
+            />
+          </div>
+
+          <button 
+            type="submit"
+            className="w-full bg-orange-600 hover:bg-orange-700 text-white font-black italic uppercase py-5 rounded-2xl transition-all shadow-lg shadow-orange-600/25 active:scale-[0.98] mt-4"
+          >
+            Login Now
+          </button>
+        </form>
+
+        <div className="mt-8 text-center">
+          <p className="text-slate-500 text-xs font-bold italic">
+            Don't have an account?{" "}
+            <Link href="/register" className="text-orange-600 hover:underline font-black">
+              REGISTER
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

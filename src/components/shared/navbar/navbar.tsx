@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Menu, X, User, LogOut, LayoutDashboard, ShoppingBag, Utensils, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,8 +22,25 @@ import {
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [user, setUser] = useState<any>(null); // ইউজার ডাটা রাখার জন্য
   const [cartCount, setCartCount] = useState(0); 
+
+  useEffect(() => {
+    // মাউন্ট হওয়ার পর লোকাল স্টোরেজ চেক করা
+    const savedUser = localStorage.getItem("user");
+    const token = localStorage.getItem("accessToken");
+    
+    if (savedUser && token) {
+      setUser(JSON.parse(savedUser));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("user");
+    setUser(null);
+    window.location.href = "/login"; // লগআউট করে লগইন পেজে পাঠানো
+  };
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -67,7 +84,7 @@ const Navbar = () => {
             <ThemeToggle />
           </div>
 
-          {isLoggedIn ? (
+          {user ? (
             <div className="flex items-center space-x-3">
               
               {/* --- Cart Icon with Sheet --- */}
@@ -106,15 +123,20 @@ const Navbar = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="icon" className="rounded-full border-2 border-orange-600/20 hover:border-orange-600 transition-all overflow-hidden focus-visible:ring-orange-600">
-                    <User className="h-5 w-5 text-orange-600" />
+                    {/* এখানে ইউজারের নামের প্রথম অক্ষর দেখানো যেতে পারে */}
+                    <span className="font-bold text-orange-600 text-xs">
+                      {user.name?.charAt(0).toUpperCase()}
+                    </span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent 
                   align="end" 
-                  // z-[100] এবং mt-2 যোগ করা হয়েছে প্রফেশনাল লুকের জন্য
                   className="w-64 p-2 rounded-1.5rem shadow-2xl border-slate-100 dark:border-slate-800 bg-background z-100 mt-2 animate-in fade-in-0 zoom-in-95"
                 >
-                  <DropdownMenuLabel className="font-black italic px-4 py-3 uppercase text-xs tracking-widest text-slate-500">Account Overview</DropdownMenuLabel>
+                  <DropdownMenuLabel className="px-4 py-3">
+                    <p className="font-black italic uppercase text-xs tracking-widest text-slate-400">Account Overview</p>
+                    <p className="text-sm font-bold mt-1 text-orange-600">{user.name}</p>
+                  </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   
                   <DropdownMenuItem asChild className="rounded-xl focus:bg-orange-50 dark:focus:bg-orange-950/30 focus:text-orange-600 py-3 cursor-pointer">
@@ -138,7 +160,7 @@ const Navbar = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 
                     className="text-red-600 font-bold rounded-xl focus:bg-red-50 dark:focus:bg-red-950/20 focus:text-red-600 py-3 cursor-pointer" 
-                    onClick={() => setIsLoggedIn(false)}
+                    onClick={handleLogout}
                   >
                     <LogOut className="mr-3 h-4 w-4" /> Log out
                   </DropdownMenuItem>
@@ -182,7 +204,7 @@ const Navbar = () => {
           </nav>
           
           <div className="pt-4">
-            {!isLoggedIn ? (
+            {!user ? (
               <div className="grid grid-cols-2 gap-4">
                 <Link href="/login" onClick={() => setIsOpen(false)}>
                   <Button variant="outline" className="w-full h-12 rounded-xl font-bold border-2">Login</Button>

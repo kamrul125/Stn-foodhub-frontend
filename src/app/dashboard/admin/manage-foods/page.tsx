@@ -33,7 +33,7 @@ const ManageFoods = () => {
 
       {/* Filters & Search */}
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative flex-grow">
+        <div className="relative grow">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
           <Input 
             placeholder="Search food by name..." 
