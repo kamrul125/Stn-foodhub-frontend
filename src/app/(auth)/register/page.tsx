@@ -1,16 +1,23 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
   const { register, handleSubmit } = useForm();
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
+  // এনভায়রনমেন্ট ভ্যারিয়েবল ব্যবহার করা হয়েছে
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
+
   const onSubmit = async (data: any) => {
+    setIsLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/v1/auth/register", {
+      console.log("🚀 Attempting registration via:", `${API_URL}/auth/register`);
+      
+      const res = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -19,13 +26,16 @@ export default function RegisterPage() {
       const result = await res.json();
 
       if (result.success) {
-        alert("Registration Successful!");
+        alert("Registration Successful! Please login.");
         router.push("/login");
       } else {
         alert(result.message || "Registration failed");
+        setIsLoading(false);
       }
     } catch (err) {
       console.error("Error during registration:", err);
+      alert("সার্ভার কানেকশন এরর! আপনার ব্যাকএন্ড কি চালু আছে?");
+      setIsLoading(false);
     }
   };
 
@@ -84,9 +94,10 @@ export default function RegisterPage() {
 
           <button 
             type="submit"
-            className="w-full bg-orange-600 hover:bg-orange-700 text-white font-black italic uppercase py-5 rounded-2xl transition-all shadow-lg shadow-orange-600/25 active:scale-[0.98] mt-4"
+            disabled={isLoading}
+            className={`w-full ${isLoading ? 'bg-slate-400' : 'bg-orange-600 hover:bg-orange-700'} text-white font-black italic uppercase py-5 rounded-2xl transition-all shadow-lg shadow-orange-600/25 active:scale-[0.98] mt-4`}
           >
-            Register Now
+            {isLoading ? "Joining..." : "Register Now"}
           </button>
         </form>
 
