@@ -7,12 +7,15 @@ export default function LoginPage() {
   const { register, handleSubmit } = useForm();
   const [isLoading, setIsLoading] = useState(false);
 
+  // ১. ডায়নামিক API URL: ভার্সেল .env থাকলে সেটা নিবে, নয়তো লোকালহোস্ট
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
+
   const onSubmit = async (data: any) => {
     setIsLoading(true);
     try {
-      console.log("🚀 Login Attempting...");
+      console.log("🚀 Attempting login via:", `${API_URL}/auth/login`);
 
-      const res = await fetch("http://localhost:5000/api/v1/auth/login", {
+      const res = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -23,11 +26,11 @@ export default function LoginPage() {
       const result = await res.json();
 
       if (result.success) {
-        // ১. LocalStorage এ ডাটা সেভ
+        // ২. LocalStorage এ ইউজার ডাটা ও টোকেন সেভ
         localStorage.setItem("accessToken", result.data.token);
         localStorage.setItem("user", JSON.stringify(result.data.user));
 
-        // ২. কুকিতে টোকেন সেট করা (SameSite=Lax দিলে মিডলওয়্যার সহজে ধরতে পারে)
+        // ৩. মিডলওয়্যার বা সার্ভার সাইড চেকের জন্য কুকিতে টোকেন সেট
         document.cookie = `token=${result.data.token}; path=/; max-age=86400; SameSite=Lax`;
 
         const rawRole = result.data?.user?.role;
@@ -35,12 +38,15 @@ export default function LoginPage() {
 
         console.log("✅ Login Success. Role:", normalizedRole);
 
-        // ৩. রিডাইরেক্ট করার আগে সামান্য বিরতি যাতে কুকি সেট হওয়ার সময় পায়
-        if (normalizedRole === "admin") {
-          window.location.href = "/dashboard/admin";
-        } else {
-          window.location.href = "/";
-        }
+        // ৪. ১০০ মি.সে. বিরতি যাতে ব্রাউজার কুকি রাইট করার সময় পায়
+        setTimeout(() => {
+          if (normalizedRole === "admin") {
+            window.location.href = "/dashboard/admin";
+          } else {
+            window.location.href = "/";
+          }
+        }, 100);
+        
       } else {
         alert(result.message || "Login failed! Please check your credentials.");
         setIsLoading(false);
@@ -55,6 +61,8 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-4 font-sans text-slate-900 dark:text-white">
       <div className="w-full max-w-md bg-white dark:bg-slate-900 p-10 rounded-[3rem] shadow-xl border border-slate-100 dark:border-slate-800">
+        
+        {/* Header */}
         <div className="text-center mb-10">
           <h1 className="text-4xl font-black italic uppercase tracking-tighter">
             FoodHub <span className="text-orange-600">Login</span>
@@ -64,6 +72,7 @@ export default function LoginPage() {
           </p>
         </div>
 
+        {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-2">
             <label className="block text-[10px] font-black uppercase italic text-slate-400 ml-4 tracking-widest">
@@ -94,12 +103,13 @@ export default function LoginPage() {
           <button 
             type="submit"
             disabled={isLoading}
-            className={`w-full ${isLoading ? 'bg-slate-400' : 'bg-orange-600 hover:bg-orange-700'} text-white font-black italic uppercase py-5 rounded-2xl transition-all shadow-lg shadow-orange-600/25 active:scale-[0.98] mt-4`}
+            className={`w-full ${isLoading ? 'bg-slate-400 cursor-not-allowed' : 'bg-orange-600 hover:bg-orange-700'} text-white font-black italic uppercase py-5 rounded-2xl transition-all shadow-lg shadow-orange-600/25 active:scale-[0.98] mt-4`}
           >
-            {isLoading ? "Checking..." : "Login Now"}
+            {isLoading ? "Authenticating..." : "Login Now"}
           </button>
         </form>
 
+        {/* Footer */}
         <div className="mt-8 text-center">
           <p className="text-slate-500 text-xs font-bold italic">
             Don't have an account?{" "}
